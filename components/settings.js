@@ -5,6 +5,7 @@ function toggleWidgetVisibility(widget, visible) {
         search: ['.search-box'],
         hotlinks: ['.quick-links'],
         calendar: ['.calendar-container'],
+        todo: ['.todo-container'],
         focus: ['.focus-container']
     };
     const selectors = map[widget] || [];

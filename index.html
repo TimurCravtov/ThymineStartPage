@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="components/settings.css">
     <link rel="stylesheet" href="components/focus.css">
     <link rel="stylesheet" href="components/weather.css">
+    <link rel="stylesheet" href="components/todo.css">
     <!-- Google API Client Libraries -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -51,6 +52,9 @@
                 <!-- Links will be injected here -->
             </div>
 
+        </div>
+
+        <div class="dashboard-bottom-row">
             <!-- FOCUS WIDGET -->
             <div class="focus-container" id="focus-container" style="display: none;">
                 <div class="focus-mode-label" id="focus-mode-label">Work</div>
@@ -61,21 +65,35 @@
                     <button class="btn-focus" onclick="switchFocusMode()">Skip</button>
                 </div>
             </div>
-        </div>
-
-        <div class="calendar-container">
-            <div id="auth-overlay" class="auth-overlay">
-                <h3>Your Schedule</h3>
-                <p>Sign in to see your upcoming events</p>
-                <button id="auth-button" class="btn-primary">Sign In with Google</button>
-            </div>
-            <div id="calendar-content" class="calendar-content" style="display: none;">
-                <div class="calendar-header">
-                    <h3>Upcoming Events</h3>
-                    <button id="signout-button" class="btn-text">Sign Out</button>
+            <!-- TODO WIDGET -->
+            <div class="todo-container" id="todo-container">
+                <div class="todo-header">
+                    <h3>Tasks</h3>
                 </div>
-                <div id="event-list" class="event-list">
-                    <div class="loading-spinner">Loading...</div>
+                <div class="todo-input-row">
+                    <input type="text" id="todo-input" placeholder="Add a new task..." autocomplete="off">
+                    <button class="btn-todo-add" onclick="window.addTodo()">+</button>
+                </div>
+                <div class="todo-list" id="todo-list">
+                    <!-- Todo items injected via JS -->
+                </div>
+            </div>
+
+            <!-- CALENDAR WIDGET -->
+            <div class="calendar-container" id="calendar-container">
+                <div id="auth-overlay" class="auth-overlay">
+                    <h3>Your Schedule</h3>
+                    <p>Sign in to see your upcoming events</p>
+                    <button id="auth-button" class="btn-primary">Sign In with Google</button>
+                </div>
+                <div id="calendar-content" class="calendar-content" style="display: none;">
+                    <div class="calendar-header">
+                        <h3>Upcoming Events</h3>
+                        <button id="signout-button" class="btn-text">Sign Out</button>
+                    </div>
+                    <div id="event-list" class="event-list">
+                        <div class="loading-spinner">Loading...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -248,6 +266,31 @@
                     <div class="s-section-body">
                         <p class="s-hint">Sign in via the calendar panel to connect your Google Calendar.</p>
                         <div id="calendar-selection-list"></div>
+                    </div>
+                </div>
+
+                <!-- ── TODO SECTION ── -->
+                <div class="s-section" id="section-todo">
+                    <div class="s-section-header" onclick="toggleSettingsSection('section-todo')">
+                        <div class="s-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 11l3 3L22 4"></path>
+                                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                            </svg>
+                            Tasks / Todo
+                        </div>
+                        <div class="s-section-actions">
+                            <label class="toggle-switch" onclick="event.stopPropagation()">
+                                <input type="checkbox" id="todo-visible" checked
+                                    onchange="toggleWidgetVisibility('todo', this.checked)">
+                                <span class="toggle-track"></span>
+                            </label>
+                            <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
                     </div>
                 </div>
 
@@ -465,6 +508,7 @@
     <script src="components/settings.js"></script>
     <script src="components/focus.js"></script>
     <script src="components/weather.js"></script>
+    <script src="components/todo.js"></script>
     <script src="script.js"></script>
 </body>
 

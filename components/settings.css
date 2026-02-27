@@ -1,7 +1,7 @@
 /* ─── Settings trigger ─── */
 .settings-button {
     position: absolute;
-    bottom: 2rem;
+    top: 2rem;
     right: 2rem;
     z-index: 10;
 }

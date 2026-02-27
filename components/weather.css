@@ -1,20 +1,20 @@
 /* ─── Weather Widget ─── */
 .weather-container {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    margin-bottom: 2rem;
     padding: 0.5rem 1rem;
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
     backdrop-filter: blur(10px);
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
     color: var(--text-primary);
     transition: all 0.3s ease;
+    z-index: 10;
 }
 
 .weather-icon {
