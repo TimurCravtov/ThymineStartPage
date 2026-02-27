@@ -2,6 +2,9 @@
 
 A stunning, minimalist start page featuring a dynamic clock, Google Search, and a custom-integrated Google Calendar via OAuth 2.0.
 
+## Avaliability
+
+Avaliable at [https://github.com/TimurCravtov/ThymineStartPage](https://github.com/TimurCravtov/ThymineStartPage)
 
 ## Features:
 
