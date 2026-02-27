@@ -142,6 +142,53 @@ function toggleSettingsSection(id) {
 }
 window.toggleSettingsSection = toggleSettingsSection;
 
+// --- Config Backup & Restore ---
+function exportConfig() {
+    const config = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        config[key] = localStorage.getItem(key);
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+
+    // Format date as YYYY-MM-DD
+    const date = new Date().toISOString().split('T')[0];
+    downloadAnchorNode.setAttribute("download", `thymine-startpage-${date}.json`);
+
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+window.exportConfig = exportConfig;
+
+function importConfig(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const config = JSON.parse(e.target.result);
+            // Optional: Backup previous config before overwriting?
+            // For now, let's clear existing configuration related local storage first
+            // Or just overwrite / merge so we don't wipe things unintentionally.
+            // Let's clear it since this is a complete restore, mostly.
+            localStorage.clear();
+            for (const key in config) {
+                localStorage.setItem(key, config[key]);
+            }
+            alert("Configuration imported successfully! Reloading page...");
+            location.reload();
+        } catch (error) {
+            alert("Invalid JSON file.");
+        }
+    };
+    reader.readAsText(file);
+}
+window.importConfig = importConfig;
+
 // --- Custom CSS ---
 const styleTag = document.createElement('style');
 styleTag.id = 'custom-runtime-styles';

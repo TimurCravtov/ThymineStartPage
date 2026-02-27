@@ -403,19 +403,57 @@
                 </div>
 
 
+            </div>
 
-
-                <!-- Small footer remark -->
-                <div class="s-section">
-                    <div class="s-section-body" style="padding-top: 1rem;">
-                        <p class="s-hint">This project is open-source — contributions, issues, and suggestions are
-                            welcome on <a href="https://github.com/TimurCravtov/ThymineStartPage"
-                                target="_blank">GitHub</a>.</p>
+            <!-- ── BACKUP SECTION ── -->
+            <div class="s-section" id="section-backup">
+                <div class="s-section-header" onclick="toggleSettingsSection('section-backup')">
+                    <div class="s-section-title">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
+                        Backup & Restore
+                    </div>
+                    <div class="s-section-actions">
+                        <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2.5">
+                            <path d="M6 9l6 6 6-6" />
+                        </svg>
                     </div>
                 </div>
+                <div class="s-section-body">
+                    <div class="s-row" style="margin-bottom: 0.5rem;">
+                        <label>Export Settings</label>
+                        <button class="btn-primary" onclick="exportConfig()"
+                            style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Export JSON</button>
+                    </div>
+                    <div class="s-row">
+                        <label>Import Settings</label>
+                        <button class="btn-primary" onclick="document.getElementById('import-config-file').click()"
+                            style="padding: 0.4rem 0.8rem; font-size: 0.85rem; background: rgba(255,255,255,0.1); color: white;">Import
+                            JSON</button>
+                        <input type="file" id="import-config-file" accept=".json" style="display: none;"
+                            onchange="importConfig(event)">
+                    </div>
+                    <p class="s-hint">Easily export and backup your links, background, calendar, and layout settings.
+                    </p>
+                </div>
+            </div>
 
-            </div><!-- /settings-body -->
-        </div><!-- /settings-panel -->
+            <!-- Small footer remark -->
+            <div class="s-section">
+                <div class="s-section-body" style="padding-top: 1rem;">
+                    <p class="s-hint">This project is open-source — contributions, issues, and suggestions are
+                        welcome on <a href="https://github.com/TimurCravtov/ThymineStartPage"
+                            target="_blank">GitHub</a>.</p>
+                </div>
+            </div>
+
+        </div><!-- /settings-body -->
+    </div><!-- /settings-panel -->
 
     </div><!-- /settings-modal -->
 
