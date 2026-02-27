@@ -103,7 +103,6 @@
                                     </div>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                     <div class="settings-modal-section">
@@ -122,29 +121,20 @@
                         </div>
                     </div>
 
-                    <div id="hotlinks-section" class="settings-modal-section">
-                        <div class="settings-modal-section-header">
+                    <div id="hotlinks-section" class="settings-modal-section collapsed">
+                        <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-section')">
                             <h4>Hotlinks</h4>
-                            <div style="display:flex;align-items:center;gap:0.5rem;">
-                                <input id="show-favicons" type="checkbox" style="margin:0;" />
-                                <label for="show-favicons" style="margin:0;font-size:0.95rem;color:var(--text-secondary);">Favicons</label>
-                            </div>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
                         </div>
+
+                    
                         <div class="settings-modal-section-content">
-                            <div id="hotlinks-links" class="settings-modal-section collapsed">
-                                <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-links')">
-                                    <h5>Links</h5>
-                                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M6 9l6 6 6-6" />
-                                    </svg>
-                                </div>
-                                <div class="settings-modal-section-content">
-                                    <div id="hotlinks-list" class="hotlinks-list">
-                                        <!-- Link editor items injected here -->
-                                    </div>
-                                    <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
-                                </div>
+                            <div id="hotlinks-list" class="hotlinks-list">
+                                <!-- Link editor items injected here -->
                             </div>
+                            <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
                         </div>
                     </div>
 

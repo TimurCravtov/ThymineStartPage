@@ -360,11 +360,12 @@ function renderQuickLinks() {
         }
     }
 
-    // Quick links do not include favicons in the card UI by default.
     container.innerHTML = userLinks.map(link => {
+        const favicon = getFaviconUrl(link.url);
         const safeName = String(link.name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return `
         <a href="${link.url}" class="link-card" target="_blank">
+            <img class="link-favicon" src="${favicon}" alt="" onerror="this.style.display='none'">
             <span>${safeName}</span>
         </a>
     `;
@@ -375,41 +376,14 @@ function renderLinkSettings() {
     const list = document.getElementById('hotlinks-list');
     if (!list) return;
 
-    list.innerHTML = userLinks.map((link, index) => {
-        const safeName = String(link.name || 'New Link').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return `
-        <div class="link-edit-item collapsed" id="link-item-${index}">
-            <button type="button" class="link-edit-header" aria-expanded="false" data-index="${index}">
-                <div class="title">${safeName}</div>
-                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-            </button>
-            <div class="link-edit-body">
-                <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
-                <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
-                <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
-            </div>
+    list.innerHTML = userLinks.map((link, index) => `
+        <div class="link-edit-item">
+            <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
+            <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
+            <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
         </div>
-    `;
-    }).join('');
-    // Attach listeners to header buttons to toggle their item (ensures handlers work reliably)
-    const headers = list.querySelectorAll('button.link-edit-header');
-    headers.forEach((hdr) => {
-        hdr.addEventListener('click', (e) => {
-            const parent = hdr.closest('.link-edit-item');
-            if (!parent) return;
-            parent.classList.toggle('collapsed');
-            // reflect aria-expanded
-            const expanded = !parent.classList.contains('collapsed');
-            hdr.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-        });
-    });
+    `).join('');
 }
-
-window.toggleLinkItem = (index) => {
-    const el = document.getElementById(`link-item-${index}`);
-    if (!el) return;
-    el.classList.toggle('collapsed');
-};
 
 window.updateLink = (index, field, value) => {
     userLinks[index][field] = value;
@@ -497,21 +471,6 @@ window.onload = () => {
 
     // Load persisted background
     loadSavedBackground();
-
-    // Favicons toggle init (control kept in settings but favicons not shown in cards)
-    const favCheckbox = document.getElementById('show-favicons');
-    const savedFav = localStorage.getItem('settings_show_favicons');
-    const showFavInitial = savedFav === null ? true : JSON.parse(savedFav);
-    if (favCheckbox) {
-        favCheckbox.checked = showFavInitial;
-        favCheckbox.onchange = (e) => {
-            localStorage.setItem('settings_show_favicons', JSON.stringify(e.target.checked));
-            // No immediate change to quick links (favicons not displayed in cards)
-        };
-        favCheckbox.addEventListener('click', (e) => e.stopPropagation());
-        const favLabel = document.querySelector('label[for="show-favicons"]');
-        if (favLabel) favLabel.addEventListener('click', (e) => e.stopPropagation());
-    }
 
     gapiLoaded();
     gisLoaded();

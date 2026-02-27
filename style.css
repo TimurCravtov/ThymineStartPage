@@ -444,8 +444,6 @@ body {
     align-items: center;
     cursor: pointer;
     user-select: none;
-    position: relative;
-    z-index: 2;
 }
 
 .settings-modal-section-header:hover h4 {
@@ -476,8 +474,6 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    position: relative;
-    z-index: 1;
 }
 
 .settings-modal-section-content-item {
@@ -559,49 +555,6 @@ body {
 .delete-link:hover {
     opacity: 1;
     color: #ff4d4d;
-}
-
-/* Collapsible link editor items */
-.link-edit-item .link-edit-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    gap: 0.5rem;
-.link-edit-item .link-edit-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    gap: 0.5rem;
-    background: transparent;
-    border: none;
-    width: 100%;
-    padding: 0.25rem 0.5rem;
-    color: inherit;
-    text-align: left;
-}
-.link-edit-item .link-edit-header .title {
-.link-edit-item .link-edit-header .title {
-    font-weight: 600;
-}
-.link-edit-item .link-edit-header .chev {
-    width: 18px;
-    height: 18px;
-    opacity: 0.6;
-    transition: transform 0.2s ease;
-}
-.link-edit-item.collapsed .link-edit-body {
-    display: none;
-}
-.link-edit-item .link-edit-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-}
-.link-edit-item:not(.collapsed) .link-edit-header .chev {
-    transform: rotate(180deg);
 }
 
 .add-link-btn {
