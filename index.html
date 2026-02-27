@@ -6,12 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Start Page</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <meta name="description" content="A customizable start page with clock, search, quick links, and Google Calendar integration.">
+    <meta name="description"
+        content="A customizable start page with clock, search, quick links, and Google Calendar integration.">
     <!-- icon  -->
     <link rel="icon" type="image/x-icon" href="assets/logo.ico">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="components/clock.css">
+    <link rel="stylesheet" href="components/search.css">
+    <link rel="stylesheet" href="components/hotlinks.css">
+    <link rel="stylesheet" href="components/calendar.css">
+    <link rel="stylesheet" href="components/settings.css">
     <!-- Google API Client Libraries -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -72,7 +78,10 @@
                 <div class="settings-panel-header">
                     <span class="settings-title">Settings</span>
                     <button class="btn-icon-sm" onclick="closeSettings()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path d="M18 6L6 18M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
 
@@ -82,15 +91,23 @@
                     <div class="s-section" id="section-clock">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-clock')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 6v6l4 2" />
+                                </svg>
                                 Clock
                             </div>
                             <div class="s-section-actions">
                                 <label class="toggle-switch" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="clock-visible" checked onchange="toggleWidgetVisibility('clock', this.checked)">
+                                    <input type="checkbox" id="clock-visible" checked
+                                        onchange="toggleWidgetVisibility('clock', this.checked)">
                                     <span class="toggle-track"></span>
                                 </label>
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
@@ -111,15 +128,23 @@
                     <div class="s-section" id="section-search">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-search')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8" />
+                                    <path d="M21 21l-4.35-4.35" />
+                                </svg>
                                 Search
                             </div>
                             <div class="s-section-actions">
                                 <label class="toggle-switch" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="search-visible" checked onchange="toggleWidgetVisibility('search', this.checked)">
+                                    <input type="checkbox" id="search-visible" checked
+                                        onchange="toggleWidgetVisibility('search', this.checked)">
                                     <span class="toggle-track"></span>
                                 </label>
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
@@ -138,29 +163,41 @@
                     <div class="s-section" id="section-hotlinks">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-hotlinks')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                </svg>
                                 Hotlinks
                             </div>
                             <div class="s-section-actions">
                                 <label class="toggle-switch" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="hotlinks-visible" checked onchange="toggleWidgetVisibility('hotlinks', this.checked)">
+                                    <input type="checkbox" id="hotlinks-visible" checked
+                                        onchange="toggleWidgetVisibility('hotlinks', this.checked)">
                                     <span class="toggle-track"></span>
                                 </label>
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
                             <div class="s-row">
                                 <label>Show Favicons</label>
                                 <label class="toggle-switch">
-                                    <input type="checkbox" id="favicons-visible" checked onchange="toggleFavicons(this.checked)">
+                                    <input type="checkbox" id="favicons-visible" checked
+                                        onchange="toggleFavicons(this.checked)">
                                     <span class="toggle-track"></span>
                                 </label>
                             </div>
                             <div class="s-divider"></div>
                             <div id="hotlinks-list" class="hotlinks-list"></div>
                             <button class="btn-add" onclick="addNewLink()">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2.5">
+                                    <path d="M12 5v14M5 12h14" />
+                                </svg>
                                 Add Link
                             </button>
                         </div>
@@ -170,15 +207,25 @@
                     <div class="s-section" id="section-calendar">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-calendar')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
                                 Calendar
                             </div>
                             <div class="s-section-actions">
                                 <label class="toggle-switch" onclick="event.stopPropagation()">
-                                    <input type="checkbox" id="calendar-visible" checked onchange="toggleWidgetVisibility('calendar', this.checked)">
+                                    <input type="checkbox" id="calendar-visible" checked
+                                        onchange="toggleWidgetVisibility('calendar', this.checked)">
                                     <span class="toggle-track"></span>
                                 </label>
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
@@ -190,11 +237,19 @@
                     <div class="s-section" id="section-appearance">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-appearance')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="3" />
+                                    <path
+                                        d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+                                </svg>
                                 Appearance
                             </div>
                             <div class="s-section-actions">
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
@@ -225,15 +280,23 @@
                     <div class="s-section" id="section-css">
                         <div class="s-section-header" onclick="toggleSettingsSection('section-css')">
                             <div class="s-section-title">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6" />
+                                    <polyline points="8 6 2 12 8 18" />
+                                </svg>
                                 Custom CSS
                             </div>
                             <div class="s-section-actions">
-                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2.5">
+                                    <path d="M6 9l6 6 6-6" />
+                                </svg>
                             </div>
                         </div>
                         <div class="s-section-body">
-                            <textarea id="custom-css-editor" placeholder="/* Custom styles… */" spellcheck="false"></textarea>
+                            <textarea id="custom-css-editor" placeholder="/* Custom styles… */"
+                                spellcheck="false"></textarea>
                             <p class="s-hint">Advanced: override any style on this page.</p>
                         </div>
                     </div>
@@ -243,7 +306,12 @@
         </div><!-- /settings-modal -->
 
     </div><!-- /container -->
-
+    <script src="components/clock.js"></script>
+    <script src="components/search.js"></script>
+    <script src="components/hotlinks.js"></script>
+    <script src="components/calendar.js"></script>
+    <script src="components/settings.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>

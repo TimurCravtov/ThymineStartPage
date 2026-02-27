@@ -4,7 +4,7 @@ A stunning, minimalist start page featuring a dynamic clock, Google Search, and 
 
 ## Avaliability
 
-Avaliable at [https://github.com/TimurCravtov/ThymineStartPage](https://github.com/TimurCravtov/ThymineStartPage)
+Avaliable at [https://timurcravtov.github.io/ThymineStartPage](https://timurcravtov.github.io/ThymineStartPage)
 
 ## Features:
 
