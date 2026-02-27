@@ -202,3 +202,14 @@ window.onload = () => {
     gapiLoaded();
     gisLoaded();
 };
+
+function openSettings() {
+    const settingsModal = document.querySelector('.settings-modal');
+    settingsModal.classList.add('active');
+}
+
+function closeSettings() {
+    const settingsModal = document.querySelector('.settings-modal');
+    settingsModal.classList.remove('active');
+}
+
