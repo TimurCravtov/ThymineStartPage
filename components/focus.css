@@ -1,0 +1,66 @@
+/* ─── Focus Mode Widget ─── */
+.focus-container {
+    background: var(--card-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    margin-top: 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.focus-mode-label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 0.5rem;
+}
+
+.focus-timer-display {
+    font-size: 5rem;
+    font-weight: 700;
+    letter-spacing: -2px;
+    margin: 1rem 0 2rem;
+    background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.focus-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.btn-focus {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-main);
+}
+
+.btn-focus:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-focus.primary {
+    background: var(--accent-gradient);
+    border: none;
+}
+
+.btn-focus.primary:hover {
+    box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
+    transform: translateY(-2px);
+}
