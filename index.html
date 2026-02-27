@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="components/calendar.css">
     <link rel="stylesheet" href="components/settings.css">
     <link rel="stylesheet" href="components/focus.css">
+    <link rel="stylesheet" href="components/weather.css">
     <!-- Google API Client Libraries -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://apis.google.com/js/api.js" async defer></script>
@@ -27,6 +28,9 @@
 <body>
     <div class="container">
         <div class="dashboard-left">
+            <div id="weather-container" class="weather-container" style="display: none;">
+                <!-- Weather content injected via JS -->
+            </div>
             <div id="clock" class="clock">
                 <span id="digital-time">00:00</span>
                 <div class="analog-hands">
@@ -284,6 +288,52 @@
                     </div>
                 </div>
 
+                <!-- ── WEATHER SECTION ── -->
+                <div class="s-section" id="section-weather">
+                    <div class="s-section-header" onclick="toggleSettingsSection('section-weather')">
+                        <div class="s-section-title">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="5" />
+                                <line x1="12" y1="1" x2="12" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="23" />
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                <line x1="1" y1="12" x2="3" y2="12" />
+                                <line x1="21" y1="12" x2="23" y2="12" />
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                            </svg>
+                            Weather
+                        </div>
+                        <div class="s-section-actions">
+                            <label class="toggle-switch" onclick="event.stopPropagation()">
+                                <input type="checkbox" id="weather-visible" checked
+                                    onchange="toggleWidgetVisibility('weather', this.checked)">
+                                <span class="toggle-track"></span>
+                            </label>
+                            <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2.5">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="s-section-body">
+                        <div class="s-row">
+                            <label>Auto-detect Location</label>
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="weather-geo-toggle" checked>
+                                <span class="toggle-track"></span>
+                            </label>
+                        </div>
+                        <div class="s-row" style="margin-top: 0.5rem;">
+                            <label>Manual City</label>
+                            <input type="text" id="weather-city-input" placeholder="e.g. London"
+                                style="width: 120px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 6px; padding: 0.3rem 0.5rem; outline: none; font-family: var(--font-main);">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ── APPEARANCE SECTION ── -->
                 <div class="s-section" id="section-appearance">
                     <div class="s-section-header" onclick="toggleSettingsSection('section-appearance')">
@@ -376,6 +426,7 @@
     <script src="components/calendar.js"></script>
     <script src="components/settings.js"></script>
     <script src="components/focus.js"></script>
+    <script src="components/weather.js"></script>
     <script src="script.js"></script>
 </body>
 

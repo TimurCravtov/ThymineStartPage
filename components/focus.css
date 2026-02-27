@@ -25,10 +25,7 @@
     font-weight: 700;
     letter-spacing: -2px;
     margin: 1rem 0 2rem;
-    background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--text-primary);
 }
 
 .focus-controls {
@@ -56,11 +53,11 @@
 }
 
 .btn-focus.primary {
-    background: var(--accent-gradient);
+    background: var(--accent-color);
     border: none;
 }
 
 .btn-focus.primary:hover {
-    box-shadow: 0 0 15px rgba(79, 70, 229, 0.4);
-    transform: translateY(-2px);
+    background: #6366f1;
+    /* Slightly lighter shade of accent color */
 }
