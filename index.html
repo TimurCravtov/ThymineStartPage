@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Google API Client Libraries -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
 </head>
+
 <body>
     <div class="container">
         <div class="dashboard-left">
             <div id="clock" class="clock">00:00</div>
             <div id="greeting" class="greeting">Good day.</div>
-            
+
             <div class="search-box">
                 <form action="https://www.google.com/search" method="GET">
                     <input type="text" name="q" placeholder="Search Google..." autocomplete="off">
@@ -38,11 +43,25 @@
         </div>
 
         <div class="calendar-container">
-            <!-- Replace with your actual Google Calendar Embed link for personalization -->
-            <iframe src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=UTC" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+            <div id="auth-overlay" class="auth-overlay">
+                <h3>Your Schedule</h3>
+                <p>Sign in to see your upcoming events</p>
+                <button id="auth-button" class="btn-primary">Sign In with Google</button>
+            </div>
+            <div id="calendar-content" class="calendar-content" style="display: none;">
+                <div class="calendar-header">
+                    <h3>Upcoming Events</h3>
+                    <button id="signout-button" class="btn-text">Sign Out</button>
+                </div>
+                <div id="event-list" class="event-list">
+                    <!-- Events will be injected here -->
+                    <div class="loading-spinner">Loading...</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
+
 </html>
