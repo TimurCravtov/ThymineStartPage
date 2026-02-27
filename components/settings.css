@@ -454,3 +454,96 @@
 #custom-css-editor:focus {
     border-color: var(--accent-color);
 }
+
+
+
+/* ─── Number Input Native Arrows Styling ─── */
+.settings-panel input[type="number"] {
+    width: 70px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: white;
+    border-radius: 6px;
+    padding: 0.3rem 0.25rem 0.3rem 0.6rem;
+    outline: none;
+    text-align: right;
+    font-family: var(--font-main);
+    transition: border-color 0.18s, background 0.18s;
+    
+    /* The magic bullet: Forces the browser's native dark mode controls */
+    color-scheme: dark; 
+}
+
+.settings-panel input[type="number"]:focus {
+    border-color: var(--accent-color);
+    background: rgba(79, 70, 229, 0.03);
+}
+
+/* WebKit (Chrome/Edge/Safari) Tweaks */
+.settings-panel input[type="number"]::-webkit-inner-spin-button,
+.settings-panel input[type="number"]::-webkit-outer-spin-button {
+    cursor: pointer;
+    opacity: 0.6; /* Softens them up so they aren't distracting */
+    transition: opacity 0.2s ease;
+    margin-left: 4px; /* Gives a tiny bit of breathing room */
+}
+
+.settings-panel input[type="number"]::-webkit-inner-spin-button:hover {
+    opacity: 1; /* Brightens when the user hovers over the arrows */
+}
+
+/* Firefox: Keep sizing consistent */
+@-moz-document url-prefix() {
+    .settings-panel input[type="number"] {
+        padding-right: 0.6rem;
+    }
+}
+
+
+/* ─── Custom Checkbox Styling ─── */
+.settings-panel input[type="checkbox"]:not(.toggle-switch input) {
+    /* Hide the default OS checkbox */
+    appearance: none;
+    -webkit-appearance: none;
+    
+    /* Set up our custom box */
+    width: 18px;
+    height: 18px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+/* Hover state for interactivity */
+.settings-panel input[type="checkbox"]:not(.toggle-switch input):hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+/* Checked state: Accent color + SVG Checkmark */
+.settings-panel input[type="checkbox"]:not(.toggle-switch input):checked {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    
+    /* Crisp inline SVG checkmark */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+    background-size: 12px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* Active click animation (tiny pop effect) */
+.settings-panel input[type="checkbox"]:not(.toggle-switch input):active {
+    transform: scale(0.9);
+}
+
+/* Focus state for accessibility */
+.settings-panel input[type="checkbox"]:not(.toggle-switch input):focus-visible {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
