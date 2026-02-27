@@ -1,6 +1,7 @@
-# Premium Start Page with Google Calendar
+# Thymine Start page
 
-A stunning, minimalist start page featuring a dynamic clock, Google Search, and a custom-integrated Google Calendar via OAuth 2.0.
+A minimalist start page featuring a clock, Google Search, Google Calendar and more.
+<img src="assets/docs/full.png" alt="demo"> 
 
 ## Avaliability
 

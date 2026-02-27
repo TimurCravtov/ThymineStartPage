@@ -2,24 +2,35 @@
 
 .quick-links {
     margin-top: 2rem;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
     gap: 1rem;
+    width: 100%;
+    max-width: 1000px;
 }
 
 .link-card {
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
-    padding: 1rem;
+    padding: 1rem 0.5rem;
     border-radius: 12px;
     text-decoration: none;
     color: var(--text-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 0.85rem;
+    overflow: hidden;
 }
 
 .link-card:hover {
@@ -36,26 +47,12 @@
     background: rgba(255, 255, 255, 0.02);
 }
 
-.link-add-small {
-    background: transparent;
-    border: none;
-    color: rgba(255, 255, 255, 0.15);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    border-radius: 12px;
-    padding: 1rem;
-}
-
-.link-add-small:hover {
-    color: rgba(255, 255, 255, 0.5);
-}
 
 /* Inline Delete Button on hover */
 .quick-links>div {
     position: relative;
+    width: 90px;
+    height: 90px;
 }
 
 .link-inline-delete {
