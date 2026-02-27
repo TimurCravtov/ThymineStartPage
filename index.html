@@ -50,68 +50,51 @@
                     <button id="signout-button" class="btn-text">Sign Out</button>
                 </div>
                 <div id="event-list" class="event-list">
-                    <!-- Events will be injected here -->
                     <div class="loading-spinner">Loading...</div>
                 </div>
             </div>
         </div>
 
         <div class="settings-button">
-            <button id="settings-button" class="btn-text" onclick="openSettings()">
+            <button id="settings-button" class="btn-icon" onclick="openSettings()">
                 <img src="assets/icons/settings.svg" alt="Settings">
             </button>
         </div>
 
-        <div class="settings-modal">
-            <div class="settings-modal-content">
-                <div class="settings-modal-header">
-                    <h3>Settings</h3>
-                    <button id="close-settings" class="btn-text" onclick="closeSettings()">Close</button>
+        <!-- SETTINGS MODAL -->
+        <div class="settings-modal" id="settings-modal">
+            <div class="settings-overlay" onclick="closeSettings()"></div>
+            <div class="settings-panel">
+
+                <div class="settings-panel-header">
+                    <span class="settings-title">Settings</span>
+                    <button class="btn-icon-sm" onclick="closeSettings()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                    </button>
                 </div>
-                <div class="settings-modal-body">
-                    <div class="settings-modal-section">
-                        <h4>Appearance</h4>
-                        <div class="settings-modal-section-content">
-                            <div class="settings-modal-section-content-item">
-                                <label for="theme">Theme</label>
-                                <select id="theme">
-                                    <option value="light">Light</option>
-                                    <option value="dark">Dark</option>
-                                </select>
+
+                <div class="settings-body">
+
+                    <!-- ── CLOCK SECTION ── -->
+                    <div class="s-section" id="section-clock">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-clock')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                                Clock
                             </div>
-                            <div class="settings-modal-section-content-item">
-                                <label for="background-type">Background</label>
-                                <div style="display:flex;flex-direction:column;gap:.5rem;min-width:180px;">
-                                    <select id="background-type">
-                                        <option value="color">Solid Color</option>
-                                        <option value="image">Custom Image</option>
-                                    </select>
-
-                                    <div id="bg-color-controls" style="display:flex;flex-direction:column;gap:.5rem;">
-                                        <div id="bg-color-swatches" aria-label="Color presets">
-                                            <!-- Color swatches injected by JS -->
-                                        </div>
-                                        <input id="bg-color-custom" type="color" title="Pick a custom color">
-                                    </div>
-
-                                    <div id="bg-image-controls" style="display:none;flex-direction:column;gap:.5rem;">
-                                        <input id="bg-image-input" type="file" accept="image/*">
-                                        <div style="display:flex;gap:.5rem;align-items:center;">
-                                            <img id="bg-image-preview" src="" alt="Preview" style="width:64px;height:40px;object-fit:cover;border-radius:6px;display:none;border:1px solid rgba(255,255,255,0.08)">
-                                            <button id="clear-bg-btn" class="btn-text">Remove Background</button>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="s-section-actions">
+                                <label class="toggle-switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="clock-visible" checked onchange="toggleWidgetVisibility('clock', this.checked)">
+                                    <span class="toggle-track"></span>
+                                </label>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
                             </div>
                         </div>
-                    </div>
-                    <div class="settings-modal-section">
-                        <h4>Clock</h4>
-                        <div class="settings-modal-section-content">
-                            <div class="settings-modal-section-content-item">
-                                <label for="clock-style">Style</label>
+                        <div class="s-section-body">
+                            <div class="s-row">
+                                <label>Style</label>
                                 <select id="clock-style">
-                                    <option value="default">Default (Gradient)</option>
+                                    <option value="default">Gradient</option>
                                     <option value="minimal">Minimalist</option>
                                     <option value="bold">Bold & Large</option>
                                     <option value="glass">Glass Card</option>
@@ -121,42 +104,143 @@
                         </div>
                     </div>
 
-                    <div id="hotlinks-section" class="settings-modal-section collapsed">
-                        <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-section')">
-                            <h4>Hotlinks</h4>
-                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
-                        </div>
-
-                    
-                        <div class="settings-modal-section-content">
-                            <div id="hotlinks-list" class="hotlinks-list">
-                                <!-- Link editor items injected here -->
+                    <!-- ── SEARCH SECTION ── -->
+                    <div class="s-section" id="section-search">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-search')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                Search
                             </div>
-                            <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
+                            <div class="s-section-actions">
+                                <label class="toggle-switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="search-visible" checked onchange="toggleWidgetVisibility('search', this.checked)">
+                                    <span class="toggle-track"></span>
+                                </label>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                        <div class="s-section-body">
+                            <div class="s-row">
+                                <label>Engine</label>
+                                <select id="search-engine">
+                                    <option value="https://www.google.com/search">Google</option>
+                                    <option value="https://duckduckgo.com/">DuckDuckGo</option>
+                                    <option value="https://www.bing.com/search">Bing</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="css-section" class="settings-modal-section collapsed">
-                        <div class="settings-modal-section-header" onclick="toggleSection('css-section')">
-                            <h4>Custom CSS</h4>
-                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
+                    <!-- ── HOTLINKS SECTION ── -->
+                    <div class="s-section" id="section-hotlinks">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-hotlinks')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                Hotlinks
+                            </div>
+                            <div class="s-section-actions">
+                                <label class="toggle-switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="hotlinks-visible" checked onchange="toggleWidgetVisibility('hotlinks', this.checked)">
+                                    <span class="toggle-track"></span>
+                                </label>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
                         </div>
-                        <div class="settings-modal-section-content">
-                            <textarea id="custom-css-editor" placeholder="/* Enter your CSS here */"
-                                spellcheck="false"></textarea>
-                            <p class="settings-hint">Advanced: Override any style on this page.</p>
+                        <div class="s-section-body">
+                            <div class="s-row">
+                                <label>Show Favicons</label>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="favicons-visible" checked onchange="toggleFavicons(this.checked)">
+                                    <span class="toggle-track"></span>
+                                </label>
+                            </div>
+                            <div class="s-divider"></div>
+                            <div id="hotlinks-list" class="hotlinks-list"></div>
+                            <button class="btn-add" onclick="addNewLink()">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                                Add Link
+                            </button>
                         </div>
                     </div>
-                </div>
-            </div>
 
-        </div>
+                    <!-- ── CALENDAR SECTION ── -->
+                    <div class="s-section" id="section-calendar">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-calendar')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                Calendar
+                            </div>
+                            <div class="s-section-actions">
+                                <label class="toggle-switch" onclick="event.stopPropagation()">
+                                    <input type="checkbox" id="calendar-visible" checked onchange="toggleWidgetVisibility('calendar', this.checked)">
+                                    <span class="toggle-track"></span>
+                                </label>
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                        <div class="s-section-body">
+                            <p class="s-hint">Sign in via the calendar panel to connect your Google Calendar.</p>
+                        </div>
+                    </div>
 
-        <script src="script.js"></script>
+                    <!-- ── APPEARANCE SECTION ── -->
+                    <div class="s-section" id="section-appearance">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-appearance')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                                Appearance
+                            </div>
+                            <div class="s-section-actions">
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                        <div class="s-section-body">
+                            <div class="s-row">
+                                <label>Background</label>
+                                <select id="background-type">
+                                    <option value="color">Solid Color</option>
+                                    <option value="image">Custom Image</option>
+                                </select>
+                            </div>
+
+                            <div id="bg-color-controls">
+                                <div id="bg-color-swatches" class="swatch-grid"></div>
+                                <input id="bg-color-custom" type="color" title="Custom color" class="color-picker">
+                            </div>
+
+                            <div id="bg-image-controls" style="display:none;">
+                                <input id="bg-image-input" type="file" accept="image/*" class="file-input">
+                                <div class="img-preview-row">
+                                    <img id="bg-image-preview" src="" alt="Preview" style="display:none;">
+                                    <button id="clear-bg-btn" class="btn-text-sm">✕ Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── CUSTOM CSS SECTION ── -->
+                    <div class="s-section" id="section-css">
+                        <div class="s-section-header" onclick="toggleSettingsSection('section-css')">
+                            <div class="s-section-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                                Custom CSS
+                            </div>
+                            <div class="s-section-actions">
+                                <svg class="s-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                        </div>
+                        <div class="s-section-body">
+                            <textarea id="custom-css-editor" placeholder="/* Custom styles… */" spellcheck="false"></textarea>
+                            <p class="s-hint">Advanced: override any style on this page.</p>
+                        </div>
+                    </div>
+
+                </div><!-- /settings-body -->
+            </div><!-- /settings-panel -->
+        </div><!-- /settings-modal -->
+
+    </div><!-- /container -->
+
+    <script src="script.js"></script>
 </body>
-
 </html>

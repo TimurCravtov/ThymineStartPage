@@ -27,12 +27,9 @@ function saveEventsToCache(events) {
 function loadEventsFromCache() {
     const cached = localStorage.getItem('cached_calendar_events');
     if (!cached) return null;
-
     const parsed = JSON.parse(cached);
-    // Optional: Only use cache if it's less than 30 minutes old
     const age = (new Date().getTime() - parsed.timestamp) / 1000 / 60;
     if (age > 30) return null;
-
     return parsed.data;
 }
 
@@ -41,7 +38,6 @@ function renderEvents(events) {
         eventList.innerHTML = '<p>No upcoming events found.</p>';
         return;
     }
-
     const output = events.map(event => {
         const start = event.start.dateTime || event.start.date;
         const date = new Date(start).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -78,7 +74,7 @@ function gisLoaded() {
     tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
         scope: SCOPES,
-        callback: '', // defined later
+        callback: '',
     });
     gisInited = true;
     maybeEnableButtons();
@@ -87,8 +83,6 @@ function gisLoaded() {
 function maybeEnableButtons() {
     if (gapiInited && gisInited) {
         authButton.style.display = 'block';
-
-        // Attempt silent login if we were previously authorized
         const token = localStorage.getItem('gapi_token_present');
         if (token) {
             tokenClient.callback = async (resp) => {
@@ -107,15 +101,12 @@ function maybeEnableButtons() {
 
 async function handleAuthClick() {
     tokenClient.callback = async (resp) => {
-        if (resp.error !== undefined) {
-            throw (resp);
-        }
+        if (resp.error !== undefined) throw (resp);
         localStorage.setItem('gapi_token_present', 'true');
         authOverlay.style.display = 'none';
         calendarContent.style.display = 'block';
         await listUpcomingEvents();
     };
-
     if (gapi.client.getToken() === null) {
         tokenClient.requestAccessToken({ prompt: 'consent' });
     } else {
@@ -149,22 +140,17 @@ async function listUpcomingEvents() {
             'orderBy': 'startTime',
         });
     } catch (err) {
-        // If we have cached data, show that instead of an error
         const cached = loadEventsFromCache();
-        if (cached) {
-            renderEvents(cached);
-            return;
-        }
+        if (cached) { renderEvents(cached); return; }
         eventList.innerHTML = `<p class="error">Error fetching events: ${err.message}</p>`;
         return;
     }
-
     const events = response.result.items;
     saveEventsToCache(events);
     renderEvents(events);
 }
 
-// --- App Initialization ---
+// --- Clock ---
 
 function updateClock() {
     const digitalTimeElement = document.getElementById('digital-time');
@@ -173,47 +159,31 @@ function updateClock() {
     const minuteHand = document.getElementById('minute-hand');
     const secondHand = document.getElementById('second-hand');
     const now = new Date();
-
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
 
-    // Update Digital
     if (digitalTimeElement) {
         digitalTimeElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
     }
-
-    // Update Analog hands
     if (hourHand && minuteHand && secondHand) {
-        const hRotation = (hours % 12) * 30 + minutes * 0.5;
-        const mRotation = minutes * 6;
-        const sRotation = seconds * 6;
-
-        hourHand.style.transform = `rotate(${hRotation}deg)`;
-        minuteHand.style.transform = `rotate(${mRotation}deg)`;
-        secondHand.style.transform = `rotate(${sRotation}deg)`;
+        hourHand.style.transform = `rotate(${(hours % 12) * 30 + minutes * 0.5}deg)`;
+        minuteHand.style.transform = `rotate(${minutes * 6}deg)`;
+        secondHand.style.transform = `rotate(${seconds * 6}deg)`;
     }
 
     let greeting = 'Good evening.';
     if (hours < 12) greeting = 'Good morning.';
     else if (hours < 18) greeting = 'Good afternoon.';
-
-    greetingElement.textContent = greeting;
+    if (greetingElement) greetingElement.textContent = greeting;
 }
 
-// --- Settings Logic ---
+// --- Clock Style ---
 
 function applyClockStyle(style) {
     const clockElement = document.getElementById('clock');
-    // Remove all style classes
     clockElement.classList.remove('minimal', 'bold', 'glass', 'circular');
-
-    // Apply selected style
-    if (style !== 'default') {
-        clockElement.classList.add(style);
-    }
-
-    // Save to localStorage
+    if (style !== 'default') clockElement.classList.add(style);
     localStorage.setItem('settings_clock_style', style);
 }
 
@@ -222,7 +192,48 @@ if (clockStyleSelect) {
     clockStyleSelect.onchange = (e) => applyClockStyle(e.target.value);
 }
 
-// --- Background Settings Logic ---
+// --- Widget Visibility ---
+
+function toggleWidgetVisibility(widget, visible) {
+    const map = {
+        clock: ['#clock', '#greeting'],
+        search: ['.search-box'],
+        hotlinks: ['.quick-links'],
+        calendar: ['.calendar-container'],
+    };
+    const selectors = map[widget] || [];
+    selectors.forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.style.display = visible ? '' : 'none';
+    });
+    // persist
+    const saved = JSON.parse(localStorage.getItem('widget_visibility') || '{}');
+    saved[widget] = visible;
+    localStorage.setItem('widget_visibility', JSON.stringify(saved));
+}
+
+function loadWidgetVisibility() {
+    const saved = JSON.parse(localStorage.getItem('widget_visibility') || '{}');
+    Object.entries(saved).forEach(([widget, visible]) => {
+        toggleWidgetVisibility(widget, visible);
+        const checkbox = document.getElementById(`${widget}-visible`);
+        if (checkbox) checkbox.checked = visible;
+    });
+}
+
+// --- Favicon toggle ---
+
+function toggleFavicons(show) {
+    localStorage.setItem('show_favicons', JSON.stringify(show));
+    renderQuickLinks();
+}
+
+function getFaviconsEnabled() {
+    const saved = localStorage.getItem('show_favicons');
+    return saved === null ? true : JSON.parse(saved);
+}
+
+// --- Background Settings ---
 
 const PRESET_BG_COLORS = ['#0c0c0c', '#071229', '#0b3a2e', '#2b0b3a', '#1a1a1a', '#7c3aed', '#4f46e5', '#ff6b6b', '#ffd166', '#06d6a0'];
 
@@ -244,26 +255,21 @@ function renderColorSwatches() {
 
 function markSelectedSwatch(color) {
     const target = String(color || '').toLowerCase();
-    const swatches = document.querySelectorAll('.bg-swatch');
-    swatches.forEach(s => {
+    document.querySelectorAll('.bg-swatch').forEach(s => {
         const c = String(s.getAttribute('data-color') || '').toLowerCase();
         s.classList.toggle('selected', c === target && target !== '');
     });
 }
 
 function applyBackground(setting) {
-    // setting: {type: 'color'|'image', value: string}
     const body = document.body;
     if (!setting) return;
     if (setting.type === 'color') {
-        // apply solid color (remove image) using backgroundColor for reliability
-        const color = String(setting.value || '').trim();
         body.style.backgroundImage = 'none';
-        body.style.backgroundColor = color || '';
+        body.style.backgroundColor = String(setting.value || '').trim();
         body.style.backgroundRepeat = '';
         body.style.backgroundSize = '';
     } else if (setting.type === 'image') {
-        // apply image as cover
         body.style.backgroundImage = `url(${setting.value})`;
         body.style.backgroundPosition = 'center';
         body.style.backgroundSize = 'cover';
@@ -276,7 +282,6 @@ function clearBackground() {
     document.body.style.background = '';
     document.body.style.backgroundImage = '';
     localStorage.removeItem('settings_background');
-    // reset UI
     const preview = document.getElementById('bg-image-preview');
     if (preview) { preview.src = ''; preview.style.display = 'none'; }
     markSelectedSwatch(null);
@@ -289,7 +294,6 @@ function loadSavedBackground() {
         const parsed = JSON.parse(saved);
         if (parsed.type === 'color') {
             applyBackground(parsed);
-            // reflect in UI
             const colorInput = document.getElementById('bg-color-custom');
             if (colorInput) colorInput.value = parsed.value;
             markSelectedSwatch(parsed.value);
@@ -311,16 +315,10 @@ function toggleBgControls(type) {
     const colorControls = document.getElementById('bg-color-controls');
     const imageControls = document.getElementById('bg-image-controls');
     if (!colorControls || !imageControls) return;
-    if (type === 'color') {
-        colorControls.style.display = 'flex';
-        imageControls.style.display = 'none';
-    } else {
-        colorControls.style.display = 'none';
-        imageControls.style.display = 'flex';
-    }
+    colorControls.style.display = type === 'color' ? 'flex' : 'none';
+    imageControls.style.display = type === 'image' ? 'flex' : 'none';
 }
 
-// File upload handling
 function handleImageUpload(file) {
     if (!file) return;
     const reader = new FileReader();
@@ -333,7 +331,15 @@ function handleImageUpload(file) {
     reader.readAsDataURL(file);
 }
 
-// --- Hotlinks Logic ---
+// --- Search Engine ---
+
+function applySearchEngine(url) {
+    const form = document.querySelector('.search-box form');
+    if (form) form.action = url;
+    localStorage.setItem('search_engine', url);
+}
+
+// --- Hotlinks ---
 
 const defaultLinks = [
     { name: 'GitHub', url: 'https://github.com' },
@@ -347,17 +353,13 @@ let userLinks = JSON.parse(localStorage.getItem('user_hotlinks')) || defaultLink
 function renderQuickLinks() {
     const container = document.querySelector('.quick-links');
     if (!container) return;
+    const showFavicons = getFaviconsEnabled();
 
     function getFaviconUrl(siteUrl) {
         try {
-            // Use hostname for reliable favicon lookup
             const u = new URL(siteUrl);
-            const domain = u.hostname;
-            // Use Google's favicon service (fast & simple)
-            return `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(domain)}`;
-        } catch (e) {
-            return '';
-        }
+            return `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(u.hostname)}`;
+        } catch (e) { return ''; }
     }
 
     container.innerHTML = userLinks.map(link => {
@@ -365,7 +367,7 @@ function renderQuickLinks() {
         const safeName = String(link.name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         return `
         <a href="${link.url}" class="link-card" target="_blank">
-            <img class="link-favicon" src="${favicon}" alt="" onerror="this.style.display='none'">
+            ${showFavicons ? `<img class="link-favicon" src="${favicon}" alt="" onerror="this.style.display='none'">` : ''}
             <span>${safeName}</span>
         </a>
     `;
@@ -375,12 +377,13 @@ function renderQuickLinks() {
 function renderLinkSettings() {
     const list = document.getElementById('hotlinks-list');
     if (!list) return;
-
     list.innerHTML = userLinks.map((link, index) => `
         <div class="link-edit-item">
             <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
             <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
-            <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
+            <button class="btn-delete" onclick="deleteLink(${index})">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
         </div>
     `).join('');
 }
@@ -406,94 +409,22 @@ function saveLinks() {
     renderLinkSettings();
 }
 
-// Attach listeners
-authButton.onclick = handleAuthClick;
-signoutButton.onclick = handleSignoutClick;
-
-window.onload = () => {
-    updateClock();
-    setInterval(updateClock, 1000);
-    renderQuickLinks();
-    renderLinkSettings();
-
-    // Apply saved clock style
-    const savedStyle = localStorage.getItem('settings_clock_style');
-    if (savedStyle && clockStyleSelect) {
-        clockStyleSelect.value = savedStyle;
-        applyClockStyle(savedStyle);
-    }
-
-    // Immediately show cached data while loading
-    const cached = loadEventsFromCache();
-    if (cached) {
-        authOverlay.style.display = 'none';
-        calendarContent.style.display = 'block';
-        renderEvents(cached);
-    }
-
-    // Custom CSS Initialization
-    cssEditor = document.getElementById('custom-css-editor');
-    const savedCSS = localStorage.getItem('user_custom_css');
-    if (savedCSS) {
-        if (cssEditor) cssEditor.value = savedCSS;
-        applyCustomCSS(savedCSS);
-    }
-    if (cssEditor) {
-        cssEditor.oninput = (e) => applyCustomCSS(e.target.value);
-    }
-
-    // Background controls init
-    renderColorSwatches();
-    const bgTypeSelect = document.getElementById('background-type');
-    const bgColorCustom = document.getElementById('bg-color-custom');
-    const bgImageInput = document.getElementById('bg-image-input');
-    const clearBtn = document.getElementById('clear-bg-btn');
-
-    if (bgTypeSelect) {
-        bgTypeSelect.onchange = (e) => toggleBgControls(e.target.value);
-    }
-    if (bgColorCustom) {
-        bgColorCustom.oninput = (e) => {
-            const color = e.target.value;
-            applyBackground({ type: 'color', value: color });
-            markSelectedSwatch(color);
-        };
-    }
-    if (bgImageInput) {
-        bgImageInput.onchange = (e) => {
-            const file = e.target.files && e.target.files[0];
-            handleImageUpload(file);
-        };
-    }
-    if (clearBtn) {
-        clearBtn.onclick = (e) => { e.preventDefault(); clearBackground(); };
-    }
-
-    // Load persisted background
-    loadSavedBackground();
-
-    gapiLoaded();
-    gisLoaded();
-};
+// --- Settings Panel ---
 
 function openSettings() {
-    const settingsModal = document.querySelector('.settings-modal');
-    settingsModal.classList.add('active');
+    document.getElementById('settings-modal').classList.add('active');
 }
 
 function closeSettings() {
-    const settingsModal = document.querySelector('.settings-modal');
-    settingsModal.classList.remove('active');
+    document.getElementById('settings-modal').classList.remove('active');
 }
 
-function toggleSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.classList.toggle('collapsed');
-    }
+function toggleSettingsSection(id) {
+    const section = document.getElementById(id);
+    if (section) section.classList.toggle('collapsed');
 }
 
-// --- Custom CSS Logic ---
+// --- Custom CSS ---
 
 const styleTag = document.createElement('style');
 styleTag.id = 'custom-runtime-styles';
@@ -504,6 +435,83 @@ function applyCustomCSS(css) {
     localStorage.setItem('user_custom_css', css);
 }
 
-// Initialized after DOM load in window.onload
 let cssEditor;
 
+// --- Init ---
+
+authButton.onclick = handleAuthClick;
+signoutButton.onclick = handleSignoutClick;
+
+window.onload = () => {
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    renderQuickLinks();
+    renderLinkSettings();
+
+    // Favicon toggle state
+    const faviconCheckbox = document.getElementById('favicons-visible');
+    if (faviconCheckbox) faviconCheckbox.checked = getFaviconsEnabled();
+
+    // Clock style
+    const savedStyle = localStorage.getItem('settings_clock_style');
+    if (savedStyle && clockStyleSelect) {
+        clockStyleSelect.value = savedStyle;
+        applyClockStyle(savedStyle);
+    }
+
+    // Widget visibility
+    loadWidgetVisibility();
+
+    // Search engine
+    const savedEngine = localStorage.getItem('search_engine');
+    const searchEngineSelect = document.getElementById('search-engine');
+    if (savedEngine) {
+        applySearchEngine(savedEngine);
+        if (searchEngineSelect) searchEngineSelect.value = savedEngine;
+    }
+    if (searchEngineSelect) {
+        searchEngineSelect.onchange = (e) => applySearchEngine(e.target.value);
+    }
+
+    // Show cached calendar data
+    const cached = loadEventsFromCache();
+    if (cached) {
+        authOverlay.style.display = 'none';
+        calendarContent.style.display = 'block';
+        renderEvents(cached);
+    }
+
+    // Custom CSS
+    cssEditor = document.getElementById('custom-css-editor');
+    const savedCSS = localStorage.getItem('user_custom_css');
+    if (savedCSS) {
+        if (cssEditor) cssEditor.value = savedCSS;
+        applyCustomCSS(savedCSS);
+    }
+    if (cssEditor) {
+        cssEditor.oninput = (e) => applyCustomCSS(e.target.value);
+    }
+
+    // Background controls
+    renderColorSwatches();
+    const bgTypeSelect = document.getElementById('background-type');
+    const bgColorCustom = document.getElementById('bg-color-custom');
+    const bgImageInput = document.getElementById('bg-image-input');
+    const clearBtn = document.getElementById('clear-bg-btn');
+
+    if (bgTypeSelect) bgTypeSelect.onchange = (e) => toggleBgControls(e.target.value);
+    if (bgColorCustom) {
+        bgColorCustom.oninput = (e) => {
+            applyBackground({ type: 'color', value: e.target.value });
+            markSelectedSwatch(e.target.value);
+        };
+    }
+    if (bgImageInput) bgImageInput.onchange = (e) => handleImageUpload(e.target.files && e.target.files[0]);
+    if (clearBtn) clearBtn.onclick = (e) => { e.preventDefault(); clearBackground(); };
+
+    loadSavedBackground();
+
+    gapiLoaded();
+    gisLoaded();
+};
