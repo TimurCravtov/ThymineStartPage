@@ -36,9 +36,10 @@ function renderEvents(events) {
     const output = events.map(event => {
         const start = event.start.dateTime || event.start.date;
         const date = new Date(start).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const calLabel = event._calendarSummary ? `<span class="event-cal-label">${event._calendarSummary}</span>` : '';
         return `
             <div class="event-item">
-                <div class="event-time">${date}</div>
+                <div class="event-time">${date} ${calLabel}</div>
                 <div class="event-summary">${event.summary}</div>
             </div>
         `;
@@ -94,13 +95,21 @@ function maybeEnableButtons() {
             tokenClient.callback = async (resp) => {
                 if (resp.error !== undefined) {
                     localStorage.removeItem('gapi_token_present');
-                    throw (resp);
+                    console.warn('Silent auth failed:', resp.error);
+                    if (authOverlay) authOverlay.style.display = 'flex';
+                    if (calendarContent) calendarContent.style.display = 'none';
+                    return;
                 }
                 if (authOverlay) authOverlay.style.display = 'none';
                 if (calendarContent) calendarContent.style.display = 'block';
+                await fetchCalendarList();
                 await listUpcomingEvents();
             };
-            tokenClient.requestAccessToken({ prompt: '' });
+            try {
+                tokenClient.requestAccessToken({ prompt: 'none' });
+            } catch (e) {
+                console.warn('Failed to request access token silently:', e);
+            }
         }
     }
 }
@@ -113,6 +122,7 @@ async function handleAuthClick() {
         localStorage.setItem('gapi_token_present', 'true');
         if (authOverlay) authOverlay.style.display = 'none';
         if (calendarContent) calendarContent.style.display = 'block';
+        await fetchCalendarList();
         await listUpcomingEvents();
     };
     if (gapi.client.getToken() === null) {
@@ -141,15 +151,26 @@ function handleSignoutClick() {
 
 async function listUpcomingEvents() {
     const eventList = document.getElementById('event-list');
-    let response;
+    let selectedCalendars = JSON.parse(localStorage.getItem('selected_calendars') || '["primary"]');
+    let allEvents = [];
+
     try {
-        response = await gapi.client.calendar.events.list({
-            'calendarId': 'primary',
-            'timeMin': (new Date()).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
-            'maxResults': 10,
-            'orderBy': 'startTime',
+        const promises = selectedCalendars.map(calId =>
+            gapi.client.calendar.events.list({
+                'calendarId': calId,
+                'timeMin': (new Date()).toISOString(),
+                'showDeleted': false,
+                'singleEvents': true,
+                'maxResults': 10,
+                'orderBy': 'startTime',
+            })
+        );
+        const responses = await Promise.all(promises);
+        responses.forEach((resp, index) => {
+            if (resp.result && resp.result.items) {
+                const items = resp.result.items.map(item => ({ ...item, _calendarSummary: resp.result.summary }));
+                allEvents = allEvents.concat(items);
+            }
         });
     } catch (err) {
         const cached = loadEventsFromCache();
@@ -157,10 +178,76 @@ async function listUpcomingEvents() {
         if (eventList) eventList.innerHTML = `<p class="error">Error fetching events: ${err.message}</p>`;
         return;
     }
-    const events = response.result.items;
+
+    allEvents.sort((a, b) => {
+        let startA = a.start.dateTime || a.start.date;
+        let startB = b.start.dateTime || b.start.date;
+        return new Date(startA) - new Date(startB);
+    });
+
+    const events = allEvents.slice(0, 10);
     saveEventsToCache(events);
     renderEvents(events);
 }
+
+async function fetchCalendarList() {
+    try {
+        const response = await gapi.client.calendar.calendarList.list();
+        const calendars = response.result.items;
+        localStorage.setItem('available_calendars', JSON.stringify(calendars));
+        renderCalendarSettings();
+    } catch (err) {
+        console.error("Failed to fetch calendar list", err);
+    }
+}
+
+function renderCalendarSettings() {
+    const list = document.getElementById('calendar-selection-list');
+    if (!list) return;
+
+    const calendars = JSON.parse(localStorage.getItem('available_calendars') || '[]');
+    let selectedCalendars = JSON.parse(localStorage.getItem('selected_calendars') || '["primary"]');
+
+    if (!calendars || calendars.length === 0) {
+        list.innerHTML = '';
+        return;
+    }
+
+    list.innerHTML = '<div class="s-divider" style="margin-top: 1rem;"></div><label style="margin: 0.75rem 0 0.5rem; display: block; font-size: 0.875rem; color: var(--text-secondary);">Visible Calendars</label>' +
+        calendars.map(cal => {
+            let isChecked = selectedCalendars.includes(cal.id) || (selectedCalendars.includes('primary') && cal.primary);
+            return `
+            <div style="margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                <input type="checkbox" id="cal-${cal.id}" value="${cal.id}" ${isChecked ? 'checked' : ''} onchange="toggleCalendarSelection('${cal.id}', this.checked)">
+                <label for="cal-${cal.id}" style="font-size: 0.85rem; cursor: pointer; color: var(--text-primary);">${cal.summary}</label>
+            </div>
+        `;
+        }).join('');
+}
+
+window.toggleCalendarSelection = (calId, isChecked) => {
+    let selectedCalendars = JSON.parse(localStorage.getItem('selected_calendars') || '["primary"]');
+
+    if (selectedCalendars.includes('primary')) {
+        const available = JSON.parse(localStorage.getItem('available_calendars') || '[]');
+        const primaryCal = available.find(c => c.primary);
+        if (primaryCal) {
+            selectedCalendars = selectedCalendars.filter(id => id !== 'primary');
+            if (!selectedCalendars.includes(primaryCal.id)) {
+                selectedCalendars.push(primaryCal.id);
+            }
+        }
+    }
+
+    if (isChecked) {
+        if (!selectedCalendars.includes(calId)) selectedCalendars.push(calId);
+    } else {
+        selectedCalendars = selectedCalendars.filter(id => id !== calId);
+    }
+
+    localStorage.setItem('selected_calendars', JSON.stringify(selectedCalendars));
+    listUpcomingEvents();
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const authButton = document.getElementById('auth-button');
@@ -178,6 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (calendarContent) calendarContent.style.display = 'block';
         renderEvents(cached);
     }
+    renderCalendarSettings();
 
     gapiLoaded();
     gisLoaded();
