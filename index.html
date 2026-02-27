@@ -79,6 +79,31 @@
                                     <option value="dark">Dark</option>
                                 </select>
                             </div>
+                            <div class="settings-modal-section-content-item">
+                                <label for="background-type">Background</label>
+                                <div style="display:flex;flex-direction:column;gap:.5rem;min-width:180px;">
+                                    <select id="background-type">
+                                        <option value="color">Solid Color</option>
+                                        <option value="image">Custom Image</option>
+                                    </select>
+
+                                    <div id="bg-color-controls" style="display:flex;flex-direction:column;gap:.5rem;">
+                                        <div id="bg-color-swatches" aria-label="Color presets">
+                                            <!-- Color swatches injected by JS -->
+                                        </div>
+                                        <input id="bg-color-custom" type="color" title="Pick a custom color">
+                                    </div>
+
+                                    <div id="bg-image-controls" style="display:none;flex-direction:column;gap:.5rem;">
+                                        <input id="bg-image-input" type="file" accept="image/*">
+                                        <div style="display:flex;gap:.5rem;align-items:center;">
+                                            <img id="bg-image-preview" src="" alt="Preview" style="width:64px;height:40px;object-fit:cover;border-radius:6px;display:none;border:1px solid rgba(255,255,255,0.08)">
+                                            <button id="clear-bg-btn" class="btn-text">Remove Background</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                     <div class="settings-modal-section">
@@ -97,18 +122,29 @@
                         </div>
                     </div>
 
-                    <div id="hotlinks-section" class="settings-modal-section collapsed">
-                        <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-section')">
+                    <div id="hotlinks-section" class="settings-modal-section">
+                        <div class="settings-modal-section-header">
                             <h4>Hotlinks</h4>
-                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M6 9l6 6 6-6" />
-                            </svg>
+                            <div style="display:flex;align-items:center;gap:0.5rem;">
+                                <input id="show-favicons" type="checkbox" style="margin:0;" />
+                                <label for="show-favicons" style="margin:0;font-size:0.95rem;color:var(--text-secondary);">Favicons</label>
+                            </div>
                         </div>
                         <div class="settings-modal-section-content">
-                            <div id="hotlinks-list" class="hotlinks-list">
-                                <!-- Link editor items injected here -->
+                            <div id="hotlinks-links" class="settings-modal-section collapsed">
+                                <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-links')">
+                                    <h5>Links</h5>
+                                    <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M6 9l6 6 6-6" />
+                                    </svg>
+                                </div>
+                                <div class="settings-modal-section-content">
+                                    <div id="hotlinks-list" class="hotlinks-list">
+                                        <!-- Link editor items injected here -->
+                                    </div>
+                                    <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
+                                </div>
                             </div>
-                            <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
                         </div>
                     </div>
 

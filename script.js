@@ -222,6 +222,117 @@ if (clockStyleSelect) {
     clockStyleSelect.onchange = (e) => applyClockStyle(e.target.value);
 }
 
+// --- Background Settings Logic ---
+
+const PRESET_BG_COLORS = ['#0c0c0c', '#071229', '#0b3a2e', '#2b0b3a', '#1a1a1a', '#7c3aed', '#4f46e5', '#ff6b6b', '#ffd166', '#06d6a0'];
+
+function renderColorSwatches() {
+    const container = document.getElementById('bg-color-swatches');
+    if (!container) return;
+    container.innerHTML = PRESET_BG_COLORS.map(c => {
+        const lc = String(c).toLowerCase();
+        return `<div class="bg-swatch" data-color="${lc}" style="background:${lc}"></div>`;
+    }).join('');
+    container.querySelectorAll('.bg-swatch').forEach(el => {
+        el.onclick = () => {
+            const color = String(el.getAttribute('data-color') || '').toLowerCase();
+            applyBackground({ type: 'color', value: color });
+            markSelectedSwatch(color);
+        };
+    });
+}
+
+function markSelectedSwatch(color) {
+    const target = String(color || '').toLowerCase();
+    const swatches = document.querySelectorAll('.bg-swatch');
+    swatches.forEach(s => {
+        const c = String(s.getAttribute('data-color') || '').toLowerCase();
+        s.classList.toggle('selected', c === target && target !== '');
+    });
+}
+
+function applyBackground(setting) {
+    // setting: {type: 'color'|'image', value: string}
+    const body = document.body;
+    if (!setting) return;
+    if (setting.type === 'color') {
+        // apply solid color (remove image) using backgroundColor for reliability
+        const color = String(setting.value || '').trim();
+        body.style.backgroundImage = 'none';
+        body.style.backgroundColor = color || '';
+        body.style.backgroundRepeat = '';
+        body.style.backgroundSize = '';
+    } else if (setting.type === 'image') {
+        // apply image as cover
+        body.style.backgroundImage = `url(${setting.value})`;
+        body.style.backgroundPosition = 'center';
+        body.style.backgroundSize = 'cover';
+        body.style.backgroundRepeat = 'no-repeat';
+    }
+    localStorage.setItem('settings_background', JSON.stringify(setting));
+}
+
+function clearBackground() {
+    document.body.style.background = '';
+    document.body.style.backgroundImage = '';
+    localStorage.removeItem('settings_background');
+    // reset UI
+    const preview = document.getElementById('bg-image-preview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    markSelectedSwatch(null);
+}
+
+function loadSavedBackground() {
+    const saved = localStorage.getItem('settings_background');
+    if (!saved) return;
+    try {
+        const parsed = JSON.parse(saved);
+        if (parsed.type === 'color') {
+            applyBackground(parsed);
+            // reflect in UI
+            const colorInput = document.getElementById('bg-color-custom');
+            if (colorInput) colorInput.value = parsed.value;
+            markSelectedSwatch(parsed.value);
+            document.getElementById('background-type').value = 'color';
+            toggleBgControls('color');
+        } else if (parsed.type === 'image') {
+            applyBackground(parsed);
+            const preview = document.getElementById('bg-image-preview');
+            if (preview) { preview.src = parsed.value; preview.style.display = 'block'; }
+            document.getElementById('background-type').value = 'image';
+            toggleBgControls('image');
+        }
+    } catch (e) {
+        console.warn('Invalid saved background', e);
+    }
+}
+
+function toggleBgControls(type) {
+    const colorControls = document.getElementById('bg-color-controls');
+    const imageControls = document.getElementById('bg-image-controls');
+    if (!colorControls || !imageControls) return;
+    if (type === 'color') {
+        colorControls.style.display = 'flex';
+        imageControls.style.display = 'none';
+    } else {
+        colorControls.style.display = 'none';
+        imageControls.style.display = 'flex';
+    }
+}
+
+// File upload handling
+function handleImageUpload(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        const preview = document.getElementById('bg-image-preview');
+        if (preview) { preview.src = dataUrl; preview.style.display = 'block'; }
+        applyBackground({ type: 'image', value: dataUrl });
+    };
+    reader.readAsDataURL(file);
+}
+
 // --- Hotlinks Logic ---
 
 const defaultLinks = [
@@ -237,25 +348,68 @@ function renderQuickLinks() {
     const container = document.querySelector('.quick-links');
     if (!container) return;
 
-    container.innerHTML = userLinks.map(link => `
+    function getFaviconUrl(siteUrl) {
+        try {
+            // Use hostname for reliable favicon lookup
+            const u = new URL(siteUrl);
+            const domain = u.hostname;
+            // Use Google's favicon service (fast & simple)
+            return `https://www.google.com/s2/favicons?sz=64&domain=${encodeURIComponent(domain)}`;
+        } catch (e) {
+            return '';
+        }
+    }
+
+    // Quick links do not include favicons in the card UI by default.
+    container.innerHTML = userLinks.map(link => {
+        const safeName = String(link.name || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `
         <a href="${link.url}" class="link-card" target="_blank">
-            <span>${link.name}</span>
+            <span>${safeName}</span>
         </a>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function renderLinkSettings() {
     const list = document.getElementById('hotlinks-list');
     if (!list) return;
 
-    list.innerHTML = userLinks.map((link, index) => `
-        <div class="link-edit-item">
-            <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
-            <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
-            <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
+    list.innerHTML = userLinks.map((link, index) => {
+        const safeName = String(link.name || 'New Link').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return `
+        <div class="link-edit-item collapsed" id="link-item-${index}">
+            <button type="button" class="link-edit-header" aria-expanded="false" data-index="${index}">
+                <div class="title">${safeName}</div>
+                <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="link-edit-body">
+                <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
+                <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
+                <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
+            </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
+    // Attach listeners to header buttons to toggle their item (ensures handlers work reliably)
+    const headers = list.querySelectorAll('button.link-edit-header');
+    headers.forEach((hdr) => {
+        hdr.addEventListener('click', (e) => {
+            const parent = hdr.closest('.link-edit-item');
+            if (!parent) return;
+            parent.classList.toggle('collapsed');
+            // reflect aria-expanded
+            const expanded = !parent.classList.contains('collapsed');
+            hdr.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        });
+    });
 }
+
+window.toggleLinkItem = (index) => {
+    const el = document.getElementById(`link-item-${index}`);
+    if (!el) return;
+    el.classList.toggle('collapsed');
+};
 
 window.updateLink = (index, field, value) => {
     userLinks[index][field] = value;
@@ -312,6 +466,51 @@ window.onload = () => {
     }
     if (cssEditor) {
         cssEditor.oninput = (e) => applyCustomCSS(e.target.value);
+    }
+
+    // Background controls init
+    renderColorSwatches();
+    const bgTypeSelect = document.getElementById('background-type');
+    const bgColorCustom = document.getElementById('bg-color-custom');
+    const bgImageInput = document.getElementById('bg-image-input');
+    const clearBtn = document.getElementById('clear-bg-btn');
+
+    if (bgTypeSelect) {
+        bgTypeSelect.onchange = (e) => toggleBgControls(e.target.value);
+    }
+    if (bgColorCustom) {
+        bgColorCustom.oninput = (e) => {
+            const color = e.target.value;
+            applyBackground({ type: 'color', value: color });
+            markSelectedSwatch(color);
+        };
+    }
+    if (bgImageInput) {
+        bgImageInput.onchange = (e) => {
+            const file = e.target.files && e.target.files[0];
+            handleImageUpload(file);
+        };
+    }
+    if (clearBtn) {
+        clearBtn.onclick = (e) => { e.preventDefault(); clearBackground(); };
+    }
+
+    // Load persisted background
+    loadSavedBackground();
+
+    // Favicons toggle init (control kept in settings but favicons not shown in cards)
+    const favCheckbox = document.getElementById('show-favicons');
+    const savedFav = localStorage.getItem('settings_show_favicons');
+    const showFavInitial = savedFav === null ? true : JSON.parse(savedFav);
+    if (favCheckbox) {
+        favCheckbox.checked = showFavInitial;
+        favCheckbox.onchange = (e) => {
+            localStorage.setItem('settings_show_favicons', JSON.stringify(e.target.checked));
+            // No immediate change to quick links (favicons not displayed in cards)
+        };
+        favCheckbox.addEventListener('click', (e) => e.stopPropagation());
+        const favLabel = document.querySelector('label[for="show-favicons"]');
+        if (favLabel) favLabel.addEventListener('click', (e) => e.stopPropagation());
     }
 
     gapiLoaded();

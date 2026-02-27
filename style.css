@@ -227,6 +227,15 @@ body {
     border-color: var(--text-secondary);
 }
 
+.link-favicon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
 .calendar-container {
     background: var(--card-bg);
     border: 1px solid var(--glass-border);
@@ -435,6 +444,8 @@ body {
     align-items: center;
     cursor: pointer;
     user-select: none;
+    position: relative;
+    z-index: 2;
 }
 
 .settings-modal-section-header:hover h4 {
@@ -465,6 +476,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    position: relative;
+    z-index: 1;
 }
 
 .settings-modal-section-content-item {
@@ -548,6 +561,49 @@ body {
     color: #ff4d4d;
 }
 
+/* Collapsible link editor items */
+.link-edit-item .link-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 0.5rem;
+.link-edit-item .link-edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    gap: 0.5rem;
+    background: transparent;
+    border: none;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+    color: inherit;
+    text-align: left;
+}
+.link-edit-item .link-edit-header .title {
+.link-edit-item .link-edit-header .title {
+    font-weight: 600;
+}
+.link-edit-item .link-edit-header .chev {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+}
+.link-edit-item.collapsed .link-edit-body {
+    display: none;
+}
+.link-edit-item .link-edit-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+.link-edit-item:not(.collapsed) .link-edit-header .chev {
+    transform: rotate(180deg);
+}
+
 .add-link-btn {
     margin-top: 0.5rem;
     text-align: left;
@@ -581,4 +637,37 @@ body {
     font-size: 0.75rem;
     color: var(--text-secondary);
     margin-top: 0.5rem;
+}
+
+/* Background controls */
+#bg-color-swatches {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.bg-swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.3) inset;
+}
+.bg-swatch.selected {
+    outline: 2px solid rgba(255,255,255,0.12);
+    transform: scale(1.05);
+}
+#bg-color-custom {
+    width: 48px;
+    height: 32px;
+    border: none;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+#bg-image-input {
+    color: var(--text-secondary);
+}
+#bg-image-preview {
+    border-radius: 6px;
 }
