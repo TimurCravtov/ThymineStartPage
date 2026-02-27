@@ -359,7 +359,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    /* Move to right */
+    padding: 1.5rem;
+    /* Space from edges */
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
@@ -373,18 +374,20 @@ body {
 
 .settings-modal-content {
     background: rgba(12, 12, 12, 0.95);
-    border-left: 1px solid var(--glass-border);
+    border: 1px solid var(--glass-border);
     height: 100%;
     padding: 3rem;
     width: 100%;
     max-width: 400px;
-    /* Sidebar width */
+    border-radius: 32px;
+    /* Rounded corners */
     backdrop-filter: blur(20px);
-    transform: translateX(100%);
-    /* Slide from right */
+    transform: translateX(120%);
+    /* Slide from further right */
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.5);
 }
 
 .settings-modal.active .settings-modal-content {
@@ -403,15 +406,54 @@ body {
 }
 
 .settings-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
+}
+
+.settings-modal-body::-webkit-scrollbar {
+    width: 4px;
+}
+
+.settings-modal-body::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 10px;
 }
 
 .settings-modal-section {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.25rem;
+}
+
+.settings-modal-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.settings-modal-section-header:hover h4 {
+    color: var(--text-primary);
+}
+
+.chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+    opacity: 0.5;
+}
+
+.settings-modal-section.collapsed .settings-modal-section-content {
+    display: none;
+}
+
+.settings-modal-section.collapsed .chevron {
+    transform: rotate(-90deg);
 }
 
 .settings-modal-section h4 {
@@ -450,4 +492,93 @@ body {
 .settings-modal-section-content-item select:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
+}
+
+/* Hotlinks Editor */
+.hotlinks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.link-edit-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    border: 1px solid var(--glass-border);
+    position: relative;
+}
+
+.link-edit-item input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.9rem;
+    width: 100%;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.link-edit-item input:focus {
+    border-color: var(--accent-color);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.delete-link {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+}
+
+.delete-link:hover {
+    opacity: 1;
+    color: #ff4d4d;
+}
+
+.add-link-btn {
+    margin-top: 0.5rem;
+    text-align: left;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+/* Custom CSS Editor */
+#custom-css-editor {
+    width: 100%;
+    height: 150px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: #a5b4fc;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.85rem;
+    padding: 1rem;
+    resize: vertical;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#custom-css-editor:focus {
+    border-color: var(--accent-color);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.settings-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
 }

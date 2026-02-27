@@ -217,10 +217,65 @@ function applyClockStyle(style) {
     localStorage.setItem('settings_clock_style', style);
 }
 
-// Hook up clock style select
 const clockStyleSelect = document.getElementById('clock-style');
 if (clockStyleSelect) {
     clockStyleSelect.onchange = (e) => applyClockStyle(e.target.value);
+}
+
+// --- Hotlinks Logic ---
+
+const defaultLinks = [
+    { name: 'GitHub', url: 'https://github.com' },
+    { name: 'YouTube', url: 'https://youtube.com' },
+    { name: 'Gmail', url: 'https://gmail.com' },
+    { name: 'ChatGPT', url: 'https://chat.openai.com' }
+];
+
+let userLinks = JSON.parse(localStorage.getItem('user_hotlinks')) || defaultLinks;
+
+function renderQuickLinks() {
+    const container = document.querySelector('.quick-links');
+    if (!container) return;
+
+    container.innerHTML = userLinks.map(link => `
+        <a href="${link.url}" class="link-card" target="_blank">
+            <span>${link.name}</span>
+        </a>
+    `).join('');
+}
+
+function renderLinkSettings() {
+    const list = document.getElementById('hotlinks-list');
+    if (!list) return;
+
+    list.innerHTML = userLinks.map((link, index) => `
+        <div class="link-edit-item">
+            <input type="text" value="${link.name}" onchange="updateLink(${index}, 'name', this.value)" placeholder="Name">
+            <input type="text" value="${link.url}" onchange="updateLink(${index}, 'url', this.value)" placeholder="URL">
+            <button class="btn-text delete-link" onclick="deleteLink(${index})">✕</button>
+        </div>
+    `).join('');
+}
+
+window.updateLink = (index, field, value) => {
+    userLinks[index][field] = value;
+    saveLinks();
+};
+
+window.deleteLink = (index) => {
+    userLinks.splice(index, 1);
+    saveLinks();
+};
+
+window.addNewLink = () => {
+    userLinks.push({ name: 'New Link', url: 'https://' });
+    saveLinks();
+};
+
+function saveLinks() {
+    localStorage.setItem('user_hotlinks', JSON.stringify(userLinks));
+    renderQuickLinks();
+    renderLinkSettings();
 }
 
 // Attach listeners
@@ -230,6 +285,8 @@ signoutButton.onclick = handleSignoutClick;
 window.onload = () => {
     updateClock();
     setInterval(updateClock, 1000);
+    renderQuickLinks();
+    renderLinkSettings();
 
     // Apply saved clock style
     const savedStyle = localStorage.getItem('settings_clock_style');
@@ -246,6 +303,17 @@ window.onload = () => {
         renderEvents(cached);
     }
 
+    // Custom CSS Initialization
+    cssEditor = document.getElementById('custom-css-editor');
+    const savedCSS = localStorage.getItem('user_custom_css');
+    if (savedCSS) {
+        if (cssEditor) cssEditor.value = savedCSS;
+        applyCustomCSS(savedCSS);
+    }
+    if (cssEditor) {
+        cssEditor.oninput = (e) => applyCustomCSS(e.target.value);
+    }
+
     gapiLoaded();
     gisLoaded();
 };
@@ -259,4 +327,25 @@ function closeSettings() {
     const settingsModal = document.querySelector('.settings-modal');
     settingsModal.classList.remove('active');
 }
+
+function toggleSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+        section.classList.toggle('collapsed');
+    }
+}
+
+// --- Custom CSS Logic ---
+
+const styleTag = document.createElement('style');
+styleTag.id = 'custom-runtime-styles';
+document.head.appendChild(styleTag);
+
+function applyCustomCSS(css) {
+    styleTag.textContent = css;
+    localStorage.setItem('user_custom_css', css);
+}
+
+// Initialized after DOM load in window.onload
+let cssEditor;
 

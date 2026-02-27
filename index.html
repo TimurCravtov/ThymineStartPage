@@ -34,18 +34,7 @@
             </div>
 
             <div class="quick-links">
-                <a href="https://github.com" class="link-card">
-                    <span>GitHub</span>
-                </a>
-                <a href="https://youtube.com" class="link-card">
-                    <span>YouTube</span>
-                </a>
-                <a href="https://gmail.com" class="link-card">
-                    <span>Gmail</span>
-                </a>
-                <a href="https://chat.openai.com" class="link-card">
-                    <span>ChatGPT</span>
-                </a>
+                <!-- Links will be injected here -->
             </div>
         </div>
 
@@ -107,13 +96,41 @@
                             </div>
                         </div>
                     </div>
+
+                    <div id="hotlinks-section" class="settings-modal-section collapsed">
+                        <div class="settings-modal-section-header" onclick="toggleSection('hotlinks-section')">
+                            <h4>Hotlinks</h4>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                        <div class="settings-modal-section-content">
+                            <div id="hotlinks-list" class="hotlinks-list">
+                                <!-- Link editor items injected here -->
+                            </div>
+                            <button class="btn-text add-link-btn" onclick="addNewLink()">+ Add New Link</button>
+                        </div>
+                    </div>
+
+                    <div id="css-section" class="settings-modal-section collapsed">
+                        <div class="settings-modal-section-header" onclick="toggleSection('css-section')">
+                            <h4>Custom CSS</h4>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 9l6 6 6-6" />
+                            </svg>
+                        </div>
+                        <div class="settings-modal-section-content">
+                            <textarea id="custom-css-editor" placeholder="/* Enter your CSS here */"
+                                spellcheck="false"></textarea>
+                            <p class="settings-hint">Advanced: Override any style on this page.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
 
-    </div>
-
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 </body>
 
 </html>
