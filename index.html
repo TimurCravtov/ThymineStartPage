@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Start Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-left">
+            <div id="clock" class="clock">00:00</div>
+            <div id="greeting" class="greeting">Good day.</div>
+            
+            <div class="search-box">
+                <form action="https://www.google.com/search" method="GET">
+                    <input type="text" name="q" placeholder="Search Google..." autocomplete="off">
+                </form>
+            </div>
+
+            <div class="quick-links">
+                <a href="https://github.com" class="link-card">
+                    <span>GitHub</span>
+                </a>
+                <a href="https://youtube.com" class="link-card">
+                    <span>YouTube</span>
+                </a>
+                <a href="https://gmail.com" class="link-card">
+                    <span>Gmail</span>
+                </a>
+                <a href="https://chat.openai.com" class="link-card">
+                    <span>ChatGPT</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <!-- Replace with your actual Google Calendar Embed link for personalization -->
+            <iframe src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=UTC" style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
