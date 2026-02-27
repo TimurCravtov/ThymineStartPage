@@ -167,20 +167,60 @@ async function listUpcomingEvents() {
 // --- App Initialization ---
 
 function updateClock() {
-    const clockElement = document.getElementById('clock');
+    const digitalTimeElement = document.getElementById('digital-time');
     const greetingElement = document.getElementById('greeting');
+    const hourHand = document.getElementById('hour-hand');
+    const minuteHand = document.getElementById('minute-hand');
+    const secondHand = document.getElementById('second-hand');
     const now = new Date();
 
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
 
-    clockElement.textContent = `${hours}:${minutes}`;
+    // Update Digital
+    if (digitalTimeElement) {
+        digitalTimeElement.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    }
+
+    // Update Analog hands
+    if (hourHand && minuteHand && secondHand) {
+        const hRotation = (hours % 12) * 30 + minutes * 0.5;
+        const mRotation = minutes * 6;
+        const sRotation = seconds * 6;
+
+        hourHand.style.transform = `rotate(${hRotation}deg)`;
+        minuteHand.style.transform = `rotate(${mRotation}deg)`;
+        secondHand.style.transform = `rotate(${sRotation}deg)`;
+    }
 
     let greeting = 'Good evening.';
-    if (now.getHours() < 12) greeting = 'Good morning.';
-    else if (now.getHours() < 18) greeting = 'Good afternoon.';
+    if (hours < 12) greeting = 'Good morning.';
+    else if (hours < 18) greeting = 'Good afternoon.';
 
     greetingElement.textContent = greeting;
+}
+
+// --- Settings Logic ---
+
+function applyClockStyle(style) {
+    const clockElement = document.getElementById('clock');
+    // Remove all style classes
+    clockElement.classList.remove('minimal', 'bold', 'glass', 'circular');
+
+    // Apply selected style
+    if (style !== 'default') {
+        clockElement.classList.add(style);
+    }
+
+    // Save to localStorage
+    localStorage.setItem('settings_clock_style', style);
+}
+
+// Hook up clock style select
+const clockStyleSelect = document.getElementById('clock-style');
+if (clockStyleSelect) {
+    clockStyleSelect.onchange = (e) => applyClockStyle(e.target.value);
 }
 
 // Attach listeners
@@ -190,6 +230,13 @@ signoutButton.onclick = handleSignoutClick;
 window.onload = () => {
     updateClock();
     setInterval(updateClock, 1000);
+
+    // Apply saved clock style
+    const savedStyle = localStorage.getItem('settings_clock_style');
+    if (savedStyle && clockStyleSelect) {
+        clockStyleSelect.value = savedStyle;
+        applyClockStyle(savedStyle);
+    }
 
     // Immediately show cached data while loading
     const cached = loadEventsFromCache();

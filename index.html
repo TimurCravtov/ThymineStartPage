@@ -17,7 +17,14 @@
 <body>
     <div class="container">
         <div class="dashboard-left">
-            <div id="clock" class="clock">00:00</div>
+            <div id="clock" class="clock">
+                <span id="digital-time">00:00</span>
+                <div class="analog-hands">
+                    <div class="hand hour" id="hour-hand"></div>
+                    <div class="hand minute" id="minute-hand"></div>
+                    <div class="hand second" id="second-hand"></div>
+                </div>
+            </div>
             <div id="greeting" class="greeting">Good day.</div>
 
             <div class="search-box">
@@ -81,6 +88,21 @@
                                 <select id="theme">
                                     <option value="light">Light</option>
                                     <option value="dark">Dark</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-modal-section">
+                        <h4>Clock</h4>
+                        <div class="settings-modal-section-content">
+                            <div class="settings-modal-section-content-item">
+                                <label for="clock-style">Style</label>
+                                <select id="clock-style">
+                                    <option value="default">Default (Gradient)</option>
+                                    <option value="minimal">Minimalist</option>
+                                    <option value="bold">Bold & Large</option>
+                                    <option value="glass">Glass Card</option>
+                                    <option value="circular">Circular Analog</option>
                                 </select>
                             </div>
                         </div>

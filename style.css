@@ -67,6 +67,107 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#digital-time {
+    display: block;
+}
+
+.analog-hands {
+    display: none;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    border: 2px solid var(--glass-border);
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+    background: var(--card-bg);
+}
+
+.clock.circular #digital-time {
+    display: none;
+}
+
+.clock.circular .analog-hands {
+    display: block;
+}
+
+.hand {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform-origin: bottom center;
+    background: white;
+    border-radius: 10px;
+}
+
+.hour {
+    width: 6px;
+    height: 60px;
+    margin-left: -3px;
+    background: var(--accent-gradient);
+}
+
+.minute {
+    width: 4px;
+    height: 80px;
+    margin-left: -2px;
+    opacity: 0.8;
+}
+
+.second {
+    width: 2px;
+    height: 90px;
+    margin-left: -1px;
+    background: #ff4d4d;
+    opacity: 0.9;
+}
+
+.analog-hands::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Clock Styles */
+.clock.minimal #digital-time {
+    font-weight: 300;
+    font-size: 5rem;
+    letter-spacing: 2px;
+    background: none;
+    -webkit-text-fill-color: var(--text-primary);
+}
+
+.clock.bold #digital-time {
+    font-weight: 900;
+    font-size: 8rem;
+    background: var(--accent-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.clock.glass #digital-time {
+    background: var(--card-bg);
+    -webkit-text-fill-color: var(--text-primary);
+    background-clip: padding-box;
+    padding: 1.5rem 2.5rem;
+    border-radius: 24px;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    font-size: 5rem;
+    width: fit-content;
 }
 
 .greeting {
@@ -253,15 +354,16 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(5px);
     display: flex;
     align-items: center;
-    justify-content: center;
-    z-index: 100;
+    justify-content: flex-end;
+    /* Move to right */
+    z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .settings-modal.active {
@@ -270,19 +372,23 @@ body {
 }
 
 .settings-modal-content {
-    background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 2rem;
-    width: 90%;
-    max-width: 600px;
-    backdrop-filter: blur(10px);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+    background: rgba(12, 12, 12, 0.95);
+    border-left: 1px solid var(--glass-border);
+    height: 100%;
+    padding: 3rem;
+    width: 100%;
+    max-width: 400px;
+    /* Sidebar width */
+    backdrop-filter: blur(20px);
+    transform: translateX(100%);
+    /* Slide from right */
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
 }
 
 .settings-modal.active .settings-modal-content {
-    transform: translateY(0);
+    transform: translateX(0);
 }
 
 .settings-modal-header {
