@@ -12,3 +12,12 @@ Avaliable at [https://timurcravtov.github.io/ThymineStartPage](https://timurcrav
 
 - Hotlinks
 
+- Weather
+
+- Focus
+
+- Settings
+
+- Clock
+
+- Search

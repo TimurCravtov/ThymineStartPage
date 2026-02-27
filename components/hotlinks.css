@@ -34,5 +34,55 @@
     object-fit: contain;
     border-radius: 6px;
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.link-add-small {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.link-add-small:hover {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Inline Delete Button on hover */
+.quick-links>div {
+    position: relative;
+}
+
+.link-inline-delete {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: #313131;
+    color: rgb(233, 88, 88);
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.quick-links>div:hover .link-inline-delete {
+    opacity: 1;
+}
+
+.link-inline-delete:hover {
+    background: #505050;
+    transform: scale(1.1);
 }
