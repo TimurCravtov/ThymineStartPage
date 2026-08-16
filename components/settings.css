@@ -330,6 +330,12 @@
     color: #ff4d4d;
 }
 
+.btn-add-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
 .btn-add {
     background: none;
     border: 1px dashed rgba(255, 255, 255, 0.12);
@@ -346,13 +352,106 @@
     width: 100%;
     justify-content: center;
     transition: border-color 0.2s, color 0.2s, background 0.2s;
-    margin-top: 0.25rem;
 }
 
 .btn-add:hover {
     border-color: var(--accent-color);
     color: var(--accent-color);
     background: rgba(79, 70, 229, 0.06);
+}
+
+/* ─── Folder Tree Editor ─── */
+.folder-edit-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.folder-edit-header {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 0.5rem;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 0.5rem 0.6rem;
+}
+
+.folder-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.folder-icon-sm {
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.folder-name-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.4rem 0.6rem;
+    border-radius: 7px;
+    color: white;
+    font-size: 0.82rem;
+    font-weight: 600;
+    width: 100%;
+    outline: none;
+    font-family: var(--font-main);
+    transition: border-color 0.2s;
+}
+
+.folder-name-input:focus {
+    border-color: var(--accent-color);
+}
+
+.folder-edit-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    flex-shrink: 0;
+}
+
+.btn-icon-xs {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    transition: background 0.2s, color 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-icon-xs:hover {
+    background: rgba(79, 70, 229, 0.15);
+    color: var(--accent-color);
+}
+
+.folder-edit-children {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-left: 0.6rem;
+    border-left: 1px dashed rgba(255, 255, 255, 0.08);
+    margin-left: 0.7rem;
+}
+
+.folder-empty-hint {
+    font-style: italic;
 }
 
 /* ─── Background Controls ─── */

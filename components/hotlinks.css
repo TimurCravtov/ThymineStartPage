@@ -3,12 +3,51 @@
 .quick-links {
     margin-top: 2rem;
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.quick-links-grid {
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     width: 100%;
-    max-width: 1000px;
+}
+
+/* ─── Breadcrumb ─── */
+.quick-links-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+}
+
+.quick-links-breadcrumb .crumb {
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+}
+
+.quick-links-breadcrumb .crumb:hover {
+    color: var(--text-primary);
+}
+
+.quick-links-breadcrumb .crumb-current {
+    color: var(--text-primary);
+    cursor: default;
+    pointer-events: none;
+}
+
+.quick-links-breadcrumb .crumb-sep {
+    opacity: 0.4;
 }
 
 .link-card {
@@ -47,20 +86,124 @@
     background: rgba(255, 255, 255, 0.02);
 }
 
+/* ─── Folder Card ─── */
+.folder-card {
+    cursor: pointer;
+    position: relative;
+}
+
+.folder-icon {
+    color: var(--accent-color);
+}
+
+.folder-count {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 0.05rem 0.4rem;
+}
+
+/* ─── Add Tile ─── */
+.add-tile {
+    border-style: dashed;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.add-tile:hover {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.quick-add-menu {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--settings-bg, #111113);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 140px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 20;
+}
+
+.quick-add-menu.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+}
+
+.quick-add-menu button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.82rem;
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.quick-add-menu button svg {
+    flex-shrink: 0;
+}
+
+.quick-add-menu button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
 
 /* Inline Delete Button on hover */
-.quick-links>div {
+.quick-links-grid>div {
     position: relative;
     width: 90px;
     height: 90px;
 }
 
-.link-inline-delete {
+/* ─── Drag & Drop ─── */
+.link-tile {
+    cursor: grab;
+}
+
+.link-tile.dragging {
+    opacity: 0.35;
+}
+
+.link-tile.drag-over .link-card {
+    box-shadow: inset 2px 0 0 var(--accent-color);
+}
+
+.link-tile.drag-over-folder .link-card.folder-card {
+    background: rgba(79, 70, 229, 0.18);
+    border-color: var(--accent-color);
+    transform: scale(1.06);
+}
+
+/* ─── Kebab (⋮) menu on hover ─── */
+.link-kebab {
     position: absolute;
     top: -6px;
     right: -6px;
     background: #313131;
-    color: rgb(233, 88, 88);
+    color: rgba(255, 255, 255, 0.75);
     border: none;
     border-radius: 50%;
     width: 22px;
@@ -75,11 +218,102 @@
     z-index: 10;
 }
 
-.quick-links>div:hover .link-inline-delete {
+.quick-links-grid>div:hover .link-kebab,
+.link-tile.menu-open .link-kebab {
     opacity: 1;
 }
 
-.link-inline-delete:hover {
+.link-kebab:hover {
     background: #505050;
     transform: scale(1.1);
+}
+
+.item-menu {
+    position: absolute;
+    top: 20px;
+    right: -6px;
+    background: var(--settings-bg, #111113);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 0.35rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 170px;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+    z-index: 30;
+}
+
+.item-menu.open {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateY(0);
+}
+
+.item-menu button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-main);
+    font-size: 0.82rem;
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-radius: 7px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+
+.item-menu button svg {
+    flex-shrink: 0;
+}
+
+.item-menu button:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+.item-menu button.menu-danger {
+    color: rgb(233, 88, 88);
+}
+
+.item-menu button.menu-danger:hover {
+    background: rgba(233, 88, 88, 0.12);
+    color: rgb(233, 88, 88);
+}
+
+.item-menu button.menu-accent {
+    color: var(--accent-color);
+}
+
+.item-menu button.menu-accent:hover {
+    background: rgba(79, 70, 229, 0.15);
+    color: var(--accent-color);
+}
+
+.item-menu button.menu-back {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+}
+
+.item-menu .menu-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 0.2rem 0;
+}
+
+.item-menu .menu-hint {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    padding: 0.4rem 0.6rem;
+    font-style: italic;
 }
